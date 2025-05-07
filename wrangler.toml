@@ -1,0 +1,17 @@
+name = "blocker-day"
+main = "index.js"
+compatibility_date = "2024-05-01"
+
+[vars]
+SEED_SALT = "seed-salt-example"
+BLOCK_PROBABILITY = "0.5"
+CALENDAR_NAME = "Blocked"
+TIMEZONE = "America/Toronto"
+BLOCK_HOURS = "3"
+TOTAL_DAYS = "14"
+SEED_SALT_ONLY = "false"
+
+# Bind readme.md file directly as a text binding
+[text_blobs]
+README = "./readme.md"
+
