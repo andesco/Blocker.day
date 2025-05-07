@@ -4,15 +4,12 @@
   "description": "Blocker.day is a Cloudflare Worker that generates a .ics calendar feed to create deterministic blocks of time",
   "main": "index.js",
   "scripts": {
-    "prebuild": "node build.js",
-    "dev": "npm run prebuild && wrangler dev",
-    "deploy": "npm run prebuild && wrangler deploy"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@cloudflare/kv-asset-handler": "^0.4.0",
-    "marked": "^15.0.11",
     "wrangler": "^4.7.2"
   }
 }
