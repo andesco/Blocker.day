@@ -8,9 +8,22 @@ export default {
     if (!pathname) {
       console.log("Handling root path, env:", Object.keys(env));
       
-      // Get readme.md from the text binding
-      // Check if the text binding exists
-      const readmeMarkdown = env.README || "# README not found\n\nPlease check your text binding configuration.";
+      // Get README.md content directly
+      // Import README.md content as a string
+      // This approach works with ES modules
+      let readmeMarkdown;
+      try {
+        // Attempt to fetch the README.md file
+        const response = await fetch(new URL('./README.md', import.meta.url).href);
+        if (response.ok) {
+          readmeMarkdown = await response.text();
+        } else {
+          readmeMarkdown = "# README not found\n\nCould not load README.md file.";
+        }
+      } catch (error) {
+        console.error("Error loading README:", error);
+        readmeMarkdown = "# README not found\n\nPlease check your configuration.";
+      }
       console.log("README content length:", readmeMarkdown.length);
       
       // Generate a random 8-character hex value

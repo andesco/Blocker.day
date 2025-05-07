@@ -11,7 +11,8 @@ BLOCK_HOURS = "3"
 TOTAL_DAYS = "14"
 SEED_SALT_ONLY = "false"
 
-# Bind readme.md file directly as a text binding
-[text_blobs]
-README = "./readme.md"
-
+# Use rules to include README.md as a static asset
+[[rules]]
+type = "Text"
+globs = ["**/*.md"]
+fallthrough = false
