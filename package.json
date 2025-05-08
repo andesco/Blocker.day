@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build:readme": "node scripts/build-readme.js",
-    "precommit": "npm run build:readme",
-    "dev": "npm run build:readme && wrangler dev",
-    "deploy": "wrangler deploy"
+    "build": "npm run build:readme",
+    "precommit": "npm run build",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   },
   "author": "",
   "license": "MIT",

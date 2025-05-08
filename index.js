@@ -1,25 +1,21 @@
-// serve pre-built index.html; no dynamic markdown parsing
-// static HTML served via __STATIC_CONTENT binding
+// HTML is served from an inlined template; no static assets binding
+import { INDEX_HTML } from './html-template.js';
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     // Make .ics optional in the URL
     let pathname = url.pathname.replace(/^\/|\/?\.?ics$/g, "");
 
-    // Handle root path: serve pre-built index.html with placeholder injection and edge caching
+    // Handle root path: serve inlined index HTML with origin & random-seed injection and edge caching
     if (!pathname) {
       const cache = caches.default;
       const cacheKey = new Request(request.url, request);
       const cached = await cache.match(cacheKey);
       if (cached) return cached;
 
-      // Load pre-built HTML from static assets binding
-      const htmlRaw = await env.__STATIC_CONTENT.get("index.html", "text");
-      if (!htmlRaw) {
-        return new Response("index.html not found", { status: 404 });
-      }
-      let html = htmlRaw;
-      html = html.replace(/\$\{url\.origin\}/g, url.origin);
+      // Use inlined HTML template
+      let html = INDEX_HTML.replace(/\$\{url\.origin\}/g, url.origin);
       const seed = Array.from(crypto.getRandomValues(new Uint8Array(4)))
         .map(b => b.toString(16).padStart(2, '0')).join('');
       html = html.replace(/random-seed-value/g, seed);

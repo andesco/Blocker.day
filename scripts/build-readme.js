@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build script to convert README.md into index.html
+ * Build script to convert README.md into html-template.js
  * Usage: node scripts/build-readme.js
  */
 const fs = require('fs');
@@ -10,17 +10,21 @@ const { marked } = require('marked');
 // Paths
 const root = process.cwd();
 const readmePath = path.join(root, 'README.md');
-const outputPath = path.join(root, 'index.html');
+// we will generate a JS module exporting the HTML template
+const outputPath = path.join(root, 'html-template.js');
 
 // Read README.md
 const markdown = fs.readFileSync(readmePath, 'utf-8');
 
 // Convert markdown to HTML
 marked.setOptions({ breaks: true });
-const contentHtml = marked.parse(markdown);
+let contentHtml = marked.parse(markdown);
 
-// Build full HTML document
-const html = `<!DOCTYPE html>
+// Replace absolute blocker.day links with a dynamic origin placeholder
+contentHtml = contentHtml.replace(/https?:\/\/blocker\.day/g, '${url.origin}');
+
+// Build full HTML document by wrapping converted markdown in a styled template
+const fullHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -35,7 +39,7 @@ const html = `<!DOCTYPE html>
       max-width: 980px;
       margin: 0 auto;
       padding: 45px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif;
     }
     @media (max-width: 767px) {
       body { padding: 15px; }
@@ -43,7 +47,7 @@ const html = `<!DOCTYPE html>
   </style>
 </head>
 <body class="markdown-body">
-  ${contentHtml}
+${contentHtml}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
   <script>
     // Generate a fresh random seed for each page load
@@ -55,6 +59,17 @@ const html = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Write index.html
-fs.writeFileSync(outputPath, html, 'utf-8');
+// Escape full HTML for inclusion in a JS template literal
+const escapedHtml = fullHtml
+  .replace(/\\/g, '\\\\')      // escape backslashes
+  .replace(/`/g, '\\`')            // escape backticks
+  .replace(/\$\{/g, '\\\${');    // escape ${ so it's literal in template
+
+// Build JS module exporting the HTML template
+const outputCode = `// Auto-generated from README.md — do not edit.
+export const INDEX_HTML = \`${escapedHtml}\`;
+`;
+
+// Write html-template.js
+fs.writeFileSync(outputPath, outputCode, 'utf-8');
 console.log(`Built ${outputPath} from ${readmePath}`);

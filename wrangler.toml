@@ -10,8 +10,3 @@ CALENDAR_NAME = "Blocked"
 TIMEZONE = "America/Toronto"
 BLOCK_HOURS = "3"
 TOTAL_DAYS = "14"
-
-[site]
-bucket = "./"
-include = ["index.html"]
-exclude = ["README.md", "node_modules/**/*", "package.json", "package-lock.json", "wrangler.toml"]
