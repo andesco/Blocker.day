@@ -3,15 +3,14 @@ main = "index.js"
 compatibility_date = "2024-05-01"
 
 [vars]
-SEED_VALUE = "seed-salt-example"
+SEED_VALUE = "default-seed"
+SEED_VALUE_ONLY = "false"
 BLOCK_PROBABILITY = "0.50"
 CALENDAR_NAME = "Blocked"
 TIMEZONE = "America/Toronto"
 BLOCK_HOURS = "3"
 TOTAL_DAYS = "14"
-SEED_VALUE_ONLY = "false"
 
-# Serve static assets from the project
 [site]
 bucket = "./"
 include = ["index.html"]

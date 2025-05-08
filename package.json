@@ -7,8 +7,7 @@
     "build:readme": "node scripts/build-readme.js",
     "precommit": "npm run build:readme",
     "dev": "npm run build:readme && wrangler dev",
-    "deploy": "wrangler deploy",
-    "setup-kv": "node setup-kv.js && npx wrangler kv:key put --binding=DOCS \"README\" --path=.readme-content.txt"
+    "deploy": "wrangler deploy"
   },
   "author": "",
   "license": "MIT",

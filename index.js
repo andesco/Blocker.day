@@ -1,5 +1,5 @@
-// Serve pre-built index.html; no dynamic markdown parsing
-// Static HTML served via __STATIC_CONTENT binding
+// serve pre-built index.html; no dynamic markdown parsing
+// static HTML served via __STATIC_CONTENT binding
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
