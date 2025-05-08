@@ -1,102 +1,32 @@
+// Serve pre-built index.html; no dynamic markdown parsing
+// Static HTML served via __STATIC_CONTENT binding
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     // Make .ics optional in the URL
     let pathname = url.pathname.replace(/^\/|\/?\.?ics$/g, "");
 
-    // Handle root path & display readme.md (Markdown) as HTML
+    // Handle root path: serve pre-built index.html with placeholder injection and edge caching
     if (!pathname) {
-      console.log("Handling root path, env:", Object.keys(env));
-      
-      // Get README.md content directly
-      // Import README.md content as a string
-      // This approach works with ES modules
-      let readmeMarkdown;
-      try {
-        // Attempt to fetch the README.md file
-        const response = await fetch(new URL('./README.md', import.meta.url).href);
-        if (response.ok) {
-          readmeMarkdown = await response.text();
-        } else {
-          readmeMarkdown = "# README not found\n\nCould not load README.md file.";
-        }
-      } catch (error) {
-        console.error("Error loading README:", error);
-        readmeMarkdown = "# README not found\n\nPlease check your configuration.";
-      }
-      console.log("README content length:", readmeMarkdown.length);
-      
-      // Generate a random 8-character hex value
-      const randomSeed = Array.from(crypto.getRandomValues(new Uint8Array(4)))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-      
-      // Process dynamic values in the README
-      const processedMarkdown = readmeMarkdown
-        .replace(/\$\{url\.origin\}/g, url.origin)
-        .replace(/random-seed-value/g, randomSeed);
-      
-      // HTML with Markdown content styled using CDN-hosted assets
-      const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blocker.day - Calendar Block Generator</title>
-  <!-- Use Cloudflare's CDN for CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
-  <style>
-    body {
-      box-sizing: border-box;
-      min-width: 200px;
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 45px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    }
-    @media (max-width: 767px) {
-      body {
-        padding: 15px;
-      }
-    }
-  </style>
-</head>
-<body class="markdown-body">
-  <div id="content"></div>
-  
-  <!-- Use Cloudflare's CDN for JavaScript libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-  <script>
-    // Configure marked with highlight.js for code highlighting
-    marked.setOptions({
-      highlight: function(code, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-          return hljs.highlight(code, { language: lang }).value;
-        }
-        return hljs.highlightAuto(code).value;
-      },
-      breaks: true
-    });
-    
-    // Render the markdown content
-    const markdown = ${JSON.stringify(processedMarkdown)};
-    document.getElementById('content').innerHTML = marked.parse(markdown);
-    
-    // Apply syntax highlighting to code blocks
-    document.querySelectorAll('pre code').forEach((block) => {
-      hljs.highlightBlock(block);
-    });
-  </script>
-</body>
-</html>`;
+      const cache = caches.default;
+      const cacheKey = new Request(request.url, request);
+      const cached = await cache.match(cacheKey);
+      if (cached) return cached;
 
-      return new Response(html, {
-        headers: {
-          "Content-Type": "text/html",
-        },
-      });
+      // Load pre-built HTML from static assets binding
+      const htmlRaw = await env.__STATIC_CONTENT.get("index.html", "text");
+      if (!htmlRaw) {
+        return new Response("index.html not found", { status: 404 });
+      }
+      let html = htmlRaw;
+      html = html.replace(/\$\{url\.origin\}/g, url.origin);
+      const seed = Array.from(crypto.getRandomValues(new Uint8Array(4)))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+      html = html.replace(/random-seed-value/g, seed);
+
+      const res = new Response(html, { headers: { "Content-Type": "text/html" } });
+      ctx.waitUntil(cache.put(cacheKey, res.clone()));
+      return res;
     }
 
     const useSaltOnly = (env.SEED_VALUE_ONLY || "").toLowerCase() === "true";
@@ -147,7 +77,7 @@ function generateICS({ seedSalt, blockProbability, calendarName, timezone, block
     const blocksPerDay = 24 / blockHours;
     for (let i = 0; i < blocksPerDay; i++) {
       if (rng() < blockProbability) {
-        // Format dates directly in yyyymmddThhmmss format required for TZID in ICS.
+        // Format dates directly in yyyymmddThhmmss format required for TZID in ICS
         const startHour = i * blockHours;
         const endHour = startHour + blockHours;
         

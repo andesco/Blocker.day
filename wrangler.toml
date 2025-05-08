@@ -3,16 +3,16 @@ main = "index.js"
 compatibility_date = "2024-05-01"
 
 [vars]
-SEED_SALT = "seed-salt-example"
-BLOCK_PROBABILITY = "0.5"
+SEED_VALUE = "seed-salt-example"
+BLOCK_PROBABILITY = "0.50"
 CALENDAR_NAME = "Blocked"
 TIMEZONE = "America/Toronto"
 BLOCK_HOURS = "3"
 TOTAL_DAYS = "14"
-SEED_SALT_ONLY = "false"
+SEED_VALUE_ONLY = "false"
 
-# Use rules to include README.md as a static asset
-[[rules]]
-type = "Text"
-globs = ["**/*.md"]
-fallthrough = false
+# Serve static assets from the project
+[site]
+bucket = "./"
+include = ["index.html"]
+exclude = ["README.md", "node_modules/**/*", "package.json", "package-lock.json", "wrangler.toml"]
