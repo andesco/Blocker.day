@@ -1,0 +1,14 @@
+name = "blocker-day"
+main = "index.js"
+compatibility_date = "2024-05-01"
+
+[vars]
+HOURS = "3"
+PROBABILITY = "0.50"
+NAME = "Blocker.day"
+SEED = "default-seed"
+SEED_VIA_URL = "false"
+ TIMEZONE = "America/Toronto"
+ DAYS = "21"
+ # URL to redirect root requests to (e.g., GitHub repo)
+ REDIRECT = "http://github.com/andesco/blocker.day"
