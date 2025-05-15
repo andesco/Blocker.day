@@ -1,10 +1,10 @@
 # Blocker.day
 
-Blocker.day is a Cloudflare Worker that generates a unique `.ics` calendar feed of random (but deterministic) blocks of unavailable time.
+Blocker.day helps you block time randomly and quickly, with a .ics calendar feed set to your desired availability.
 
-Use Blocker.day to quickly populate an otherwise sparse calendar app, including Apple or Google; or randomly limit availability in a scheduling app, including [Cal.com](https://cal.com) and [SavvyCal](https://savvycal.com).
+Using random (but deterministic) blocks of unavailable time, you can quickly populate an otherwise sparse calendar app, including Apple or Google; or randomly limit availability in a scheduling app, including [Cal.com](https://cal.com) and [SavvyCal](https://savvycal.com).
 
-For example, Apple Calendar subscription to Blocker.day with 1 hour blocks and 50% probability: \
+For example, Blocker.day in Apple Calendar, set to 1 hour blocks and 50% probability: \
 [blocker.day/calendar.ics?h=1&p=0.50](https://blocker.day/calendar.ics?h=1&p=0.50)
 
 <picture style="max-width: 554px; width: 100%; display: block;">
@@ -21,13 +21,15 @@ For example, Apple Calendar subscription to Blocker.day with 1 hour blocks and 
 
 ## Add or Subscribe
 
-Add or subscribe to blocker.day in your calendar or scheduling app:
+Add or subscribe to Blocker.day in your calendar or scheduling app:
 
-#### [blocker.day/calendar](https://blocker.day/calendar) <br />[blocker.day/calendar.ics](https://blocker.day/calendar.ics) <br /> [blocker.day/calendar.ics?days=7&hours=4&probability=0.35](https://blocker.day/calendar.ics?days=7&hours=4&probability=0.35)
+#### https://blocker.day/calendar <br /> https://blocker.day/calendar.ics <br /> https://blocker.day/calendar.ics?days=7&hours=4&probability=0.35
 
 The `.ics` file extension is optional. `DAYS`, `HOURS`, and `PROBABILITY` can be set in the URL query.
 
 ## Deploy
+
+Blocker.day is a Cloudflare Worker (serverless function) that generates a unique `.ics` calendar feeds.
 
 Deploy your own Cloudflare Worker to change additional settings (using [environment variables](#variables)) including `NAME`, `SEED`, `SEED_VIA_URL`, and `TIMEZONE`,
 
