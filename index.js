@@ -17,6 +17,7 @@ export default {
       return new Response('Not found', { status: 404 });
     }
 
+
     // ICS generation at /calendar or /calendar.ics
     // Determine seed from env.SEED (defaulting to "default-seed"), optionally overridden by URL query if enabled
     let seed = env.SEED || 'default-seed';
@@ -29,20 +30,32 @@ export default {
     }
 
     // Configure calendar parameters from environment, with URL query overrides if provided
+    // Number of days: current day + next X days; allow 'days' or alias 'd'
     let totalDays = clamp(parseInt(env.DAYS || "14", 10), 1, 21);
-    if (url.searchParams.has("days")) {
-      const qDays = parseInt(url.searchParams.get("days"), 10);
+    if (url.searchParams.has("days") || url.searchParams.has("d")) {
+      const rawDays = url.searchParams.has("days")
+        ? url.searchParams.get("days")
+        : url.searchParams.get("d");
+      const qDays = parseInt(rawDays, 10);
       if (!isNaN(qDays)) totalDays = clamp(qDays, 1, 21);
     }
+    // Block size in hours; allow 'hours' or alias 'h'
     let blockHours = validateBlockHours(parseFloat(env.HOURS || "3"));
-    if (url.searchParams.has("hours")) {
-      const qHours = parseFloat(url.searchParams.get("hours"));
+    if (url.searchParams.has("hours") || url.searchParams.has("h")) {
+      const rawHours = url.searchParams.has("hours")
+        ? url.searchParams.get("hours")
+        : url.searchParams.get("h");
+      const qHours = parseFloat(rawHours);
       if (!isNaN(qHours)) blockHours = validateBlockHours(qHours);
     }
-    let blockProbability = clamp(parseFloat(env.PROBABILITY || "0.5"), 0.01, 0.99);
-    if (url.searchParams.has("probability")) {
-      const qProb = parseFloat(url.searchParams.get("probability"));
-      if (!isNaN(qProb)) blockProbability = clamp(qProb, 0.01, 0.99);
+    // Probability of blocking a time slot; allow full range 0.00–1.00; alias 'p'
+    let blockProbability = clamp(parseFloat(env.PROBABILITY || "0.50"), 0.00, 1.00);
+    if (url.searchParams.has("probability") || url.searchParams.has("p")) {
+      const rawProb = url.searchParams.has("probability")
+        ? url.searchParams.get("probability")
+        : url.searchParams.get("p");
+      const qProb = parseFloat(rawProb);
+      if (!isNaN(qProb)) blockProbability = clamp(qProb, 0.00, 1.00);
     }
     const calendarName = env.NAME || "Blocker.day";
 
@@ -54,13 +67,14 @@ export default {
       blockHours,
       totalDays,
     });
-
-    return new Response(calendar, {
+    // Build response
+    const response = new Response(calendar, {
       headers: {
         "Content-Type": "text/calendar",
         "Content-Disposition": `attachment; filename="${seed}.ics"`,
       },
     });
+    return response;
   }
 };
 

@@ -81,26 +81,29 @@ Calendar feeds generate consistent blocks of time based on the seed being used. 
  
  ### Environment Variables
  
- | Variable      | Description                                  | Default   |
- |---------------|----------------------------------------------|-----------|
- | `DAYS`        | number of days: <br/> 1–21                   | `14` |
- | `HOURS`       | hours in each block of time: <br /> 0.5, 1, 2, 3, 4, 6, 8, 12, 24 | `3` |
- | `TIMEZONE`    | IANA timezone: <br/> [timezone identifier][wiki1] | `America/Toronto`   |
- | `NAME`        | calendar/event name displayed in apps        | `Blocker.day` |
- | `PROBABILITY` | probability of a time block: <br/> 0.00–1.00 | `0.50`    |
- | `SEED`        | default seed value                           | `default-seed-value` |
- | `SEED_VIA_URL`| set `SEED` using URL query (<br/>true, false     | `false`   |
+ | Variable      | Description                            | Default                  |
+ |---------------|----------------------------------------|--------------------------|
+ | `DAYS`        | number of days: 1–21                   | `14`                     |
+ | `HOURS`       | hours in each block of time: <br /> 0.5, 1, 2, 3, 4, 6, 8, 12, 24 | `3`  |
+ | `TIMEZONE`    | [IANA timezone identifier][wiki]       | [`America/Toronto`][timeis]     |
+ | `NAME`        | calendar/event name displayed in apps  | `Blocker.day`            |
+ | `PROBABILITY` | probability of a time block: 0.00–1.00 | `0.50`                   |
+ | `REDIRECT`    | redirects hostname root                | [`andesco/blocker.day`][github] |
+ | `SEED`        | default seed value                     | `default-seed-value`     |
+ | `SEED_VIA_URL`| enable seeting `SEED` via URL query: <br /> true, false | `false` |
  
 ### URL Query Parameters
 
- | Variable      | Description                                  |
- |---------------|----------------------------------------------|
- | `days` <br> `d`| number of days: <br/> 1–21                   |
+ | Variable         | Description                |
+ |------------------|----------------------------|
+ | `days` <br> `d`  | number of days: <br/> 1–21 |
  | `hours` <br> `h` | hours in each block of time: <br /> 0.5, 1, 2, 3, 4, 6, 8, 12, 24 | `3` |
  | `probability` <br> `p` | probability of a time block: <br/> 0.00–1.00 |
- | `seed` | calendar-specific seed value if `SEED_VIA_URL` is true
+ | `seed`           | calendar-specific seed value if `SEED_VIA_URL` is true |
 
 
-   [iana1]: https://www.iana.org/time-zones
-   [wiki1]: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+   [iana]:  https://www.iana.org/time-zones
+   [wiki]:  https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+   [timeis]: https://time.is/Toronto
+   [github]: https://github.com/andesco/blocker.day
   
