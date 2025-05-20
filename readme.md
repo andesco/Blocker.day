@@ -19,15 +19,17 @@ For example, Blocker.day in Apple Calendar, set to 1 hour blocks and 50% probabi
 - deterministic pseudo-random availability based on your seed value, probability, and time block
 - time blocks begin each day at midnight (00:00) in the timezone specified
 
-## Add or Subscribe
+## Add or Subscribe: [blocker.day/calendar](https://blocker.day/calendar.ics)
 
-Add or subscribe to Blocker.day in your calendar or scheduling app:
+Add or subscribe to Blocker.day in your calendar or scheduling app. You can include the option `.ics` file extension and set `DAYS`, `HOURS`, and `PROBABILITY` in the URL query:
 
-#### https://blocker.day/calendar <br /> https://blocker.day/calendar.ics <br /> https://blocker.day/calendar.ics?days=7&hours=4&probability=0.35
+https://blocker.day/calendar \
+https://blocker.day/calendar.ics \
+https://blocker.day/calendar.ics?d=7&h=4&p=0.35 \
+https://blocker.day/calendar.ics?days=7&hours=4&probability=0.35
 
-The `.ics` file extension is optional. `DAYS`, `HOURS`, and `PROBABILITY` can be set in the URL query.
 
-## Deploy
+## Deploy to Cloudflare
 
 Blocker.day is a Cloudflare Worker (serverless function) that generates a unique `.ics` calendar feeds.
 
@@ -63,7 +65,7 @@ wrangler login
 wrangler deploy
 ```
 
-## Usage
+## Usage &
 
 Add or subscribe to a calendar using your worker subdomain, a custom subdomain, or blocker.day:
  
@@ -76,10 +78,10 @@ Add or subscribe to a calendar using your worker subdomain, a custom subdomain, 
 Calendar feeds generate consistent blocks of time based on the seed being used. To get a new set of randomized (but deterministic) blocks of time, update your Cloudflare Worker environment variables:
 
 - change the default value of `SEED`; or
-- set `SEED_VIA_URL` to `true` to set an optional per-calendar `SEED` when included in the URL query: `https://subdomain.personal.com/calendar?seed=random-seed-value`
+- set `SEED_VIA_URL` to `true` and set an optional per-calendar `SEED` in the URL query: `https://subdomain.personal.com/calendar?seed=random-seed-value`
 
  
- ## Variables
+ ##
  
  ### Environment Variables
  
